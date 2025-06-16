@@ -1,0 +1,61 @@
+lead_id,first_name,last_name,email,company,title,lead_source,platform,created_date,lead_score,status,annual_revenue,employees,industry,conversion_date,opportunity_value,stage
+SF001,John,Smith,john.smith@techcorp.com,TechCorp Inc,VP Engineering,Web,LinkedIn,2024-01-15,85,Converted,5000000,250,Technology,2024-02-28,75000,Closed Won
+SF002,Sarah,Johnson,sarah.j@innovate.io,Innovate Solutions,Marketing Director,Event,Events,2024-01-18,92,Converted,12000000,500,Software,2024-03-15,120000,Closed Won
+SF003,Mike,Chen,mchen@startup.ai,StartupAI,Founder,Social Media,TikTok,2024-01-20,65,Qualified,800000,25,AI/ML,,,Opportunity
+SF004,Lisa,Rodriguez,lisa.r@enterprise.com,Enterprise Corp,CTO,Web,LinkedIn,2024-01-22,88,Converted,25000000,1000,Finance,2024-03-22,200000,Closed Won
+SF005,David,Wilson,dwilson@growth.co,Growth Co,Head of Sales,Event,Events,2024-01-25,79,Qualified,3000000,150,Marketing,,,Opportunity
+SF006,Emma,Taylor,emma@disrupt.tech,Disrupt Tech,CEO,Social Media,TikTok,2024-01-28,45,Nurturing,600000,15,Technology,,,Lead
+SF007,Alex,Brown,alex.brown@scale.io,Scale Solutions,VP Product,Web,LinkedIn,2024-02-01,91,Converted,8000000,300,SaaS,2024-03-18,95000,Closed Won
+SF008,Rachel,Davis,rachel@fintech.com,FinTech Innovations,CMO,Event,Events,2024-02-03,87,Converted,15000000,600,Financial Services,2024-04-10,180000,Closed Won
+SF009,Tom,Miller,tmiller@mobile.app,Mobile Dynamics,CTO,Social Media,TikTok,2024-02-05,52,Qualified,1200000,40,Mobile,,,Opportunity
+SF010,Grace,White,grace@cloud.systems,Cloud Systems,Head of Engineering,Web,LinkedIn,2024-02-08,83,Converted,6000000,220,Cloud Computing,2024-03-25,85000,Closed Won
+SF011,Kevin,Garcia,kevin@retail.tech,RetailTech,VP Innovation,Event,Events,2024-02-10,76,Qualified,4500000,180,Retail,,,Opportunity
+SF012,Sophie,Martinez,sophie@health.ai,HealthAI,Founder,Social Media,TikTok,2024-02-12,38,Nurturing,400000,12,Healthcare,,,Lead
+SF013,Ryan,Anderson,ryan@logistics.pro,LogisticsPro,Operations Director,Web,LinkedIn,2024-02-15,89,Converted,10000000,400,Logistics,2024-04-02,110000,Closed Won
+SF014,Mia,Thomas,mia@edu.tech,EduTech Solutions,Product Manager,Event,Events,2024-02-18,82,Qualified,2800000,120,Education,,,Opportunity
+SF015,Jake,Jackson,jake@gaming.studio,Gaming Studio,Lead Developer,Social Media,TikTok,2024-02-20,58,Qualified,900000,30,Gaming,,,Opportunity
+SF016,Olivia,Lee,olivia@consulting.firm,Consulting Firm,Partner,Web,LinkedIn,2024-02-22,94,Converted,20000000,800,Consulting,2024-04-15,250000,Closed Won
+SF017,Nathan,Wilson,nathan@biotech.lab,BioTech Labs,Research Director,Event,Events,2024-02-25,85,Converted,7000000,280,Biotechnology,2024-04-20,130000,Closed Won
+SF018,Zoe,Moore,zoe@fashion.tech,Fashion Tech,Creative Director,Social Media,TikTok,2024-02-28,42,Nurturing,500000,18,Fashion,,,Lead
+SF019,Ethan,Taylor,ethan@auto.tech,AutoTech Innovations,VP Engineering,Web,LinkedIn,2024-03-01,86,Converted,18000000,700,Automotive,2024-04-25,190000,Closed Won
+SF020,Chloe,Clark,chloe@green.energy,Green Energy Co,Sustainability Lead,Event,Events,2024-03-03,78,Qualified,5500000,200,Energy,,,Opportunity
+SF021,Mason,Lewis,mason@crypto.exchange,Crypto Exchange,Head of Product,Social Media,TikTok,2024-03-05,48,Nurturing,1500000,50,Cryptocurrency,,,Lead
+SF022,Lily,Walker,lily@travel.platform,Travel Platform,VP Marketing,Web,LinkedIn,2024-03-08,87,Converted,3500000,160,Travel,2024-05-01,80000,Closed Won
+SF023,Owen,Hall,owen@food.delivery,Food Delivery Inc,Operations Manager,Event,Events,2024-03-10,81,Qualified,2200000,100,Food & Beverage,,,Opportunity
+SF024,Ava,Allen,ava@real.estate,Real Estate Tech,Product Lead,Social Media,TikTok,2024-03-12,55,Qualified,1800000,60,Real Estate,,,Opportunity
+SF025,Lucas,Young,lucas@security.systems,Security Systems,CISO,Web,LinkedIn,2024-03-15,92,Converted,12000000,450,Cybersecurity,2024-05-10,160000,Closed Won
+SF026,Isla,King,isla@media.company,Media Company,Content Director,Event,Events,2024-03-18,73,Qualified,4000000,170,Media,,,Opportunity
+SF027,Leo,Wright,leo@sports.analytics,Sports Analytics,Data Scientist,Social Media,TikTok,2024-03-20,39,Nurturing,300000,8,Sports,,,Lead
+SF028,Maya,Lopez,maya@insurance.tech,Insurance Tech,VP Product,Web,LinkedIn,2024-03-22,88,Converted,9000000,350,Insurance,2024-05-15,140000,Closed Won
+SF029,Noah,Hill,noah@agriculture.ai,Agriculture AI,Founder,Event,Events,2024-03-25,84,Qualified,1600000,45,Agriculture,,,Opportunity
+SF030,Ruby,Scott,ruby@music.streaming,Music Streaming,Head of Growth,Social Media,TikTok,2024-03-28,46,Nurturing,700000,22,Entertainment,,,Lead
+SF031,James,Parker,james@devtools.com,DevTools Inc,Engineering Manager,Web,LinkedIn,2024-04-01,89,Converted,4200000,180,Software,2024-05-20,92000,Closed Won
+SF032,Hannah,Cooper,hannah@dataworks.ai,DataWorks AI,Chief Data Officer,Event,Events,2024-04-03,90,Converted,11000000,380,Data Analytics,2024-06-05,145000,Closed Won
+SF033,Caleb,Reed,caleb@social.platform,Social Platform,Product Owner,Social Media,TikTok,2024-04-05,61,Qualified,2100000,75,Social Media,,,Opportunity
+SF034,Victoria,Bailey,victoria@ecommerce.hub,Ecommerce Hub,VP Operations,Web,LinkedIn,2024-04-08,85,Converted,7500000,290,E-commerce,2024-05-25,88000,Closed Won
+SF035,Hunter,Cox,hunter@blockchain.ventures,Blockchain Ventures,Investment Director,Event,Events,2024-04-10,77,Qualified,8900000,320,Blockchain,,,Opportunity
+SF036,Layla,Ward,layla@content.creator,Content Creator Co,Creative Lead,Social Media,TikTok,2024-04-12,44,Nurturing,650000,20,Content,,,Lead
+SF037,Logan,Torres,logan@manufacturing.tech,Manufacturing Tech,Operations Lead,Web,LinkedIn,2024-04-15,86,Converted,13500000,520,Manufacturing,2024-06-01,165000,Closed Won
+SF038,Aria,Peterson,aria@wellness.app,Wellness App,Health Director,Event,Events,2024-04-18,83,Qualified,1900000,85,Health & Wellness,,,Opportunity
+SF039,Carter,Gray,carter@fintech.startup,FinTech Startup,Co-Founder,Social Media,TikTok,2024-04-20,59,Qualified,1100000,35,Financial Technology,,,Opportunity
+SF040,Scarlett,Ramirez,scarlett@hr.solutions,HR Solutions,People Operations,Web,LinkedIn,2024-04-22,87,Converted,5800000,240,Human Resources,2024-06-08,95000,Closed Won
+SF041,Wyatt,James,wyatt@supply.chain,Supply Chain Pro,Logistics Manager,Event,Events,2024-04-25,81,Qualified,6200000,210,Supply Chain,,,Opportunity
+SF042,Penelope,Watson,penelope@ai.research,AI Research Lab,Research Scientist,Social Media,TikTok,2024-04-28,41,Nurturing,950000,28,Research,,,Lead
+SF043,Grayson,Brooks,grayson@saas.platform,SaaS Platform,Growth Lead,Web,LinkedIn,2024-05-01,88,Converted,4700000,195,SaaS,2024-06-12,82000,Closed Won
+SF044,Luna,Kelly,luna@event.management,Event Management Co,Event Director,Event,Events,2024-05-03,79,Qualified,3100000,140,Events,,,Opportunity
+SF045,Easton,Sanders,easton@mobile.gaming,Mobile Gaming Studio,Game Producer,Social Media,TikTok,2024-05-05,53,Qualified,1400000,48,Gaming,,,Opportunity
+SF046,Violet,Price,violet@legal.tech,Legal Tech Solutions,Legal Operations,Web,LinkedIn,2024-05-08,91,Converted,8700000,330,Legal Technology,2024-06-15,125000,Closed Won
+SF047,Nolan,Bennett,nolan@property.management,Property Management,Asset Manager,Event,Events,2024-05-10,74,Qualified,4800000,185,Real Estate,,,Opportunity
+SF048,Hazel,Wood,hazel@creator.economy,Creator Economy,Platform Manager,Social Media,TikTok,2024-05-12,47,Nurturing,800000,25,Creator Economy,,,Lead
+SF049,Ian,Barnes,ian@cybersec.consulting,CyberSec Consulting,Security Consultant,Web,LinkedIn,2024-05-15,89,Converted,6800000,265,Cybersecurity,2024-06-18,102000,Closed Won
+SF050,Autumn,Ross,autumn@nonprofit.tech,Nonprofit Tech,Program Director,Event,Events,2024-05-18,76,Qualified,2500000,110,Nonprofit,,,Opportunity
+SF051,Jaxon,Henderson,jaxon@quantum.computing,Quantum Computing Inc,Research Lead,Social Media,TikTok,2024-05-20,62,Qualified,3800000,95,Quantum Computing,,,Opportunity
+SF052,Nova,Coleman,nova@space.tech,Space Tech,Mission Planner,Web,LinkedIn,2024-05-22,93,Converted,15200000,580,Aerospace,2024-06-20,220000,Closed Won
+SF053,Ryder,Jenkins,ryder@agriculture.drone,Agriculture Drone Co,Operations Manager,Event,Events,2024-05-25,82,Qualified,2700000,125,Agriculture Technology,,,Opportunity
+SF054,Stella,Perry,stella@fashion.ai,Fashion AI,Style Director,Social Media,TikTok,2024-05-28,43,Nurturing,590000,19,Fashion Technology,,,Lead
+SF055,Knox,Powell,knox@robotics.industrial,Industrial Robotics,Automation Engineer,Web,LinkedIn,2024-06-01,87,Converted,9200000,385,Robotics,2024-06-22,132000,Closed Won
+SF056,Paisley,Long,paisley@green.transport,Green Transport,Sustainability Manager,Event,Events,2024-06-03,78,Qualified,5100000,195,Transportation,,,Opportunity
+SF057,Zander,Patterson,zander@virtual.reality,Virtual Reality Studio,VR Developer,Social Media,TikTok,2024-06-05,56,Qualified,1650000,55,Virtual Reality,,,Opportunity
+SF058,Willow,Hughes,willow@clean.energy,Clean Energy Solutions,Energy Analyst,Web,LinkedIn,2024-06-08,84,Converted,7100000,275,Clean Energy,2024-06-25,108000,Closed Won
+SF059,Phoenix,Flores,phoenix@smart.city,Smart City Tech,Urban Planner,Event,Events,2024-06-10,80,Qualified,4300000,165,Smart Cities,,,Opportunity
+SF060,Sage,Washington,sage@ocean.tech,Ocean Tech,Marine Biologist,Social Media,TikTok,2024-06-12,49,Nurturing,890000,32,Ocean Technology,,,Lead
