@@ -1,4 +1,9 @@
 platform,total_leads,qualified_leads,converted_leads,avg_lead_score,avg_opportunity_value,avg_deal_size,conversion_rate,time_to_conversion_days,lead_to_opportunity_rate,opportunity_to_close_rate
-LinkedIn,20,19,15,87.2,126933,126933,0.75,48,0.95,0.79
-TikTok,20,11,3,51.4,75000,75000,0.15,62,0.55,0.27
-Events,20,19,10,79.8,150500,150500,0.50,55,0.95,0.53
+LinkedIn,28,26,20,87.5,123750,123750,0.71,48,0.93,0.77
+TikTok,32,18,5,51.8,78000,78000,0.16,58,0.56,0.28
+Events,28,26,15,79.4,144667,144667,0.54,52,0.93,0.58
+Google Ads,22,18,16,84.2,125688,125688,0.73,45,0.82,0.89
+Facebook,20,14,11,78.9,91273,91273,0.55,42,0.70,0.79
+YouTube,20,12,10,83.1,108900,108900,0.50,46,0.60,0.83
+Webinars,20,15,14,88.2,133571,133571,0.70,39,0.75,0.93
+Podcasts,20,12,11,86.7,117636,117636,0.55,44,0.60,0.92

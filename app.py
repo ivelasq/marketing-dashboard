@@ -4,6 +4,10 @@ from plotnine import *
 import matplotlib.pyplot as plt
 import io
 import base64
+import querychat
+
+# Brand colors from brand.yml
+BRAND_COLORS = ["#2563eb", "#7c3aed", "#059669", "#d97706", "#dc2626", "#0891b2", "#6366f1", "#ec4899"]
 
 # Load data
 @reactive.calc
@@ -45,68 +49,226 @@ def plot_to_base64(plot, width=8, height=6, dpi=300):
 # UI
 app_ui = ui.page_fluid(
     ui.tags.head(
+        ui.tags.link(rel="stylesheet", href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap"),
         ui.tags.style("""
-            .sidebar {
-                background-color: #f8f9fa;
-                padding: 20px;
-                border-radius: 5px;
-                margin-bottom: 20px;
+            * {
+                font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
             }
+            
+            body {
+                background-color: #f8fafc;
+                color: #1e293b;
+            }
+            
+            .sidebar {
+                background-color: white;
+                padding: 1.5rem;
+                border-radius: 0.75rem;
+                margin-bottom: 1.5rem;
+                box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+                border: 1px solid #e2e8f0;
+            }
+            
+            .sidebar h3 {
+                color: #2563eb;
+                font-weight: 600;
+                font-size: 1.25rem;
+                margin-bottom: 1rem;
+            }
+            
             .metric-card {
                 background-color: white;
-                padding: 15px;
-                border-radius: 5px;
-                box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-                margin-bottom: 15px;
+                padding: 1.5rem;
+                border-radius: 0.75rem;
+                box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+                margin-bottom: 1.5rem;
                 text-align: center;
+                border: 1px solid #e2e8f0;
+                transition: transform 0.2s ease, box-shadow 0.2s ease;
             }
+            
+            .metric-card:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+            }
+            
             .metric-value {
-                font-size: 2em;
-                font-weight: bold;
-                color: #2c3e50;
+                font-size: 2.25rem;
+                font-weight: 700;
+                color: #2563eb;
+                margin-bottom: 0.25rem;
             }
+            
             .metric-label {
-                color: #7f8c8d;
-                font-size: 0.9em;
+                color: #64748b;
+                font-size: 0.875rem;
+                font-weight: 500;
+                text-transform: uppercase;
+                letter-spacing: 0.05em;
             }
+            
             .chart-container {
-                text-align: center;
-                margin-bottom: 20px;
+                background-color: white;
+                padding: 1.5rem;
+                border-radius: 0.75rem;
+                box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+                margin-bottom: 1.5rem;
+                border: 1px solid #e2e8f0;
+                transition: transform 0.2s ease, box-shadow 0.2s ease;
             }
+            
+            .chart-container:hover {
+                transform: translateY(-1px);
+                box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+            }
+            
             .faq-answer {
-                background-color: #f8f9fa;
-                padding: 20px;
-                border-radius: 5px;
-                margin-top: 15px;
-                border-left: 4px solid #007bff;
+                background-color: white;
+                padding: 1.5rem;
+                border-radius: 0.75rem;
+                margin-top: 1rem;
+                border-left: 4px solid #2563eb;
+                box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+                border-right: 1px solid #e2e8f0;
+                border-top: 1px solid #e2e8f0;
+                border-bottom: 1px solid #e2e8f0;
             }
+            
             .chat-container {
                 background-color: white;
-                padding: 30px;
-                border-radius: 10px;
-                box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-                margin-bottom: 20px;
+                padding: 2rem;
+                border-radius: 1rem;
+                box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+                margin-bottom: 1.5rem;
+                border: 1px solid #e2e8f0;
             }
+            
             .chat-response {
-                background-color: #f8f9fa;
-                padding: 20px;
-                border-radius: 8px;
-                margin-top: 15px;
-                border-left: 4px solid #28a745;
+                background-color: #f8fafc;
+                padding: 1.5rem;
+                border-radius: 0.75rem;
+                margin-top: 1rem;
+                border-left: 4px solid #059669;
                 max-height: 400px;
                 overflow-y: auto;
+                border-right: 1px solid #e2e8f0;
+                border-top: 1px solid #e2e8f0;
+                border-bottom: 1px solid #e2e8f0;
+            }
+            
+            h1 {
+                color: #1e293b;
+                font-weight: 700;
+                font-size: 2.25rem;
+                margin-bottom: 2rem;
+                text-align: center;
+            }
+            
+            h3, h4 {
+                color: #1e293b;
+                font-weight: 600;
+            }
+            
+            .btn-primary {
+                background-color: #2563eb;
+                border-color: #2563eb;
+                border-radius: 0.5rem;
+                padding: 0.75rem 1.5rem;
+                font-weight: 500;
+                transition: all 0.2s ease;
+            }
+            
+            .btn-primary:hover {
+                background-color: #1d4ed8;
+                border-color: #1d4ed8;
+                transform: translateY(-1px);
+            }
+            
+            .form-control, .form-select {
+                border-radius: 0.5rem;
+                border: 1px solid #d1d5db;
+                font-size: 0.875rem;
+                transition: border-color 0.2s ease;
+            }
+            
+            .form-control:focus, .form-select:focus {
+                border-color: #2563eb;
+                box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+            }
+            
+            .nav-tabs .nav-link {
+                border: none;
+                border-radius: 0.5rem;
+                margin-right: 0.5rem;
+                padding: 0.75rem 1.5rem;
+                font-weight: 500;
+                color: #64748b;
+                transition: all 0.2s ease;
+            }
+            
+            .nav-tabs .nav-link.active {
+                background-color: #2563eb;
+                color: white;
+            }
+            
+            .nav-tabs .nav-link:hover {
+                color: #2563eb;
+                background-color: #f1f5f9;
+            }
+            
+            .selectize-input {
+                width: 100% !important;
+                border: 2px solid #2563eb !important;
+                border-radius: 0.75rem !important;
+                padding: 0.75rem 1rem !important;
+                font-size: 1rem !important;
+                font-weight: 500 !important;
+                background: linear-gradient(135deg, #f8fafc 0%, #ffffff 100%) !important;
+                box-shadow: 0 4px 6px -1px rgba(37, 99, 235, 0.1) !important;
+                transition: all 0.3s ease !important;
+                min-height: 50px !important;
+            }
+            
+            .selectize-input:focus {
+                border-color: #1d4ed8 !important;
+                box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1), 0 4px 12px -1px rgba(37, 99, 235, 0.2) !important;
+                transform: translateY(-2px) !important;
+            }
+            
+            .selectize-dropdown {
+                border: 2px solid #2563eb !important;
+                border-radius: 0.75rem !important;
+                box-shadow: 0 10px 25px -3px rgba(37, 99, 235, 0.2) !important;
+                z-index: 1000 !important;
+            }
+            
+            .selectize-dropdown-content .option {
+                padding: 0.75rem 1rem !important;
+                font-weight: 500 !important;
+                transition: all 0.2s ease !important;
+            }
+            
+            .selectize-dropdown-content .option:hover {
+                background-color: #2563eb !important;
+                color: white !important;
+            }
+            
+            .selectize-dropdown-content .option.active {
+                background-color: #1d4ed8 !important;
+                color: white !important;
             }
         """)
     ),
     
     ui.navset_tab(
         ui.nav_panel("Dashboard",
-            ui.h1("Marketing Lead Quality Dashboard", style="text-align: center; color: #2c3e50; margin-bottom: 30px;"),
+            ui.br(),
+            ui.h1("Marketing Lead Quality Dashboard"),
             ui.row(
             # Sidebar with filters
             ui.column(3,
                 ui.div(
-                    ui.h3("Filters", style="color: #34495e;"),
+                    ui.h3("Filters"),
                     
                     ui.input_date_range(
                         "date_range",
@@ -116,13 +278,15 @@ app_ui = ui.page_fluid(
                         min="2024-01-01",
                         max="2024-12-31"
                     ),
+                    ui.br(),
                     
                     ui.input_checkbox_group(
                         "platforms",
                         "Platforms",
-                        choices=["LinkedIn", "TikTok", "Events"],
-                        selected=["LinkedIn", "TikTok", "Events"]
+                        choices=["LinkedIn", "TikTok", "Events", "Google Ads", "Facebook", "YouTube", "Webinars", "Podcasts"],
+                        selected=["LinkedIn", "TikTok", "Events", "Google Ads", "Facebook", "YouTube", "Webinars", "Podcasts"]
                     ),
+                    ui.br(),
                     
                     ui.input_checkbox_group(
                         "company_sizes",
@@ -130,6 +294,7 @@ app_ui = ui.page_fluid(
                         choices=["Small (< 50)", "Medium (50-250)", "Large (251-500)", "Enterprise (500+)"],
                         selected=["Small (< 50)", "Medium (50-250)", "Large (251-500)", "Enterprise (500+)"]
                     ),
+                    ui.br(),
                     
                     ui.input_selectize(
                         "industries",
@@ -138,6 +303,7 @@ app_ui = ui.page_fluid(
                         selected=[],
                         multiple=True
                     ),
+                    ui.br(),
                     
                     ui.input_checkbox_group(
                         "lead_status",
@@ -145,9 +311,9 @@ app_ui = ui.page_fluid(
                         choices=["Converted", "Qualified", "Opportunity", "Nurturing"],
                         selected=["Converted", "Qualified", "Opportunity", "Nurturing"]
                     ),
-                    
                     ui.br(),
-                    ui.download_button("download_data", "Download Filtered Data", class_="btn-primary"),
+                    
+                    ui.download_button("download_data", "Download Data", class_="btn-primary", style="width: 100%;"),
                     
                     class_="sidebar"
                 )
@@ -186,6 +352,7 @@ app_ui = ui.page_fluid(
         ),
         ui.nav_panel("Lead Source FAQ",
             ui.div(
+                ui.br(),
                 ui.h1("Lead Source FAQ", style="text-align: center; color: #2c3e50; margin-bottom: 30px;"),
                 ui.row(
                     ui.column(12,
@@ -202,7 +369,6 @@ app_ui = ui.page_fluid(
                                     "What are the seasonal trends in lead generation?",
                                     "Which industries have the fastest conversion times?",
                                     "What is the ROI comparison across different platforms?",
-                                    "How does lead quality vary by geographic region?",
                                     "What are the characteristics of our best converting leads?",
                                     "Which time periods show the highest lead activity?"
                                 ],
@@ -217,6 +383,7 @@ app_ui = ui.page_fluid(
         ),
         ui.nav_panel("QueryChat",
             ui.div(
+                ui.br(),
                 ui.h1("QueryChat - Ask Questions About Your Data", style="text-align: center; color: #2c3e50; margin-bottom: 30px;"),
                 ui.row(
                     ui.column(12,
@@ -377,13 +544,18 @@ def server(input, output, session):
             return ui.div("No data available")
         
         plot = (ggplot(trend_data, aes(x='month', y='leads', color='platform', group='platform')) +
-                geom_line(size=1.2) +
-                geom_point(size=2) +
+                geom_line(size=1.5) +
+                geom_point(size=3) +
                 theme_minimal() +
+                scale_color_manual(values=BRAND_COLORS[:len(trend_data['platform'].unique())]) +
                 labs(title='Lead Generation Trends by Platform',
                      x='Month', y='Number of Leads', color='Platform') +
-                theme(axis_text_x=element_text(rotation=45),
-                      plot_title=element_text(size=14, weight='bold')))
+                theme(axis_text_x=element_text(rotation=45, size=10),
+                      plot_title=element_text(size=16, weight='bold', color='#1e293b'),
+                      axis_title=element_text(size=12, color='#64748b'),
+                      legend_title=element_text(size=12, weight='bold'),
+                      panel_grid_major=element_line(color='#f1f5f9'),
+                      panel_grid_minor=element_blank()))
         
         img_str = plot_to_base64(plot, width=8, height=5)
         return ui.img(src=img_str, style="max-width: 100%; height: auto;")
@@ -406,13 +578,17 @@ def server(input, output, session):
             return ui.div("No data available")
         
         plot = (ggplot(platform_stats, aes(x='platform')) +
-                geom_col(aes(y='avg_lead_score'), fill='lightblue', alpha=0.7) +
-                geom_point(aes(y='conversion_rate'), color='red', size=4) +
-                geom_line(aes(y='conversion_rate', group=1), color='red', size=1) +
+                geom_col(aes(y='avg_lead_score'), fill=BRAND_COLORS[0], alpha=0.8) +
+                geom_point(aes(y='conversion_rate'), color=BRAND_COLORS[2], size=4) +
+                geom_line(aes(y='conversion_rate', group=1), color=BRAND_COLORS[2], size=1.5) +
                 theme_minimal() +
                 labs(title='Platform Performance: Lead Score vs Conversion Rate',
                      x='Platform', y='Average Lead Score') +
-                theme(plot_title=element_text(size=14, weight='bold')))
+                theme(plot_title=element_text(size=16, weight='bold', color='#1e293b'),
+                      axis_title=element_text(size=12, color='#64748b'),
+                      axis_text=element_text(size=10),
+                      panel_grid_major=element_line(color='#f1f5f9'),
+                      panel_grid_minor=element_blank()))
         
         img_str = plot_to_base64(plot, width=8, height=5)
         return ui.img(src=img_str, style="max-width: 100%; height: auto;")
@@ -444,9 +620,15 @@ def server(input, output, session):
         plot = (ggplot(funnel_df, aes(x='stage', y='count', fill='platform')) +
                 geom_col(position='dodge') +
                 theme_minimal() +
+                scale_fill_manual(values=BRAND_COLORS[:len(funnel_df['platform'].unique())]) +
                 labs(title='Conversion Funnel by Platform',
                      x='Stage', y='Number of Leads', fill='Platform') +
-                theme(plot_title=element_text(size=14, weight='bold')))
+                theme(plot_title=element_text(size=16, weight='bold', color='#1e293b'),
+                      axis_title=element_text(size=12, color='#64748b'),
+                      axis_text=element_text(size=10),
+                      legend_title=element_text(size=12, weight='bold'),
+                      panel_grid_major=element_line(color='#f1f5f9'),
+                      panel_grid_minor=element_blank()))
         
         img_str = plot_to_base64(plot, width=8, height=5)
         return ui.img(src=img_str, style="max-width: 100%; height: auto;")
@@ -462,11 +644,17 @@ def server(input, output, session):
             return ui.div("No data available")
         
         plot = (ggplot(leads_pd, aes(x='lead_score', fill='platform')) +
-                geom_histogram(alpha=0.7, bins=20, position='identity') +
+                geom_histogram(alpha=0.8, bins=20, position='identity') +
                 theme_minimal() +
+                scale_fill_manual(values=BRAND_COLORS[:len(leads_pd['platform'].unique())]) +
                 labs(title='Lead Score Distribution by Platform',
                      x='Lead Score', y='Count', fill='Platform') +
-                theme(plot_title=element_text(size=14, weight='bold')))
+                theme(plot_title=element_text(size=16, weight='bold', color='#1e293b'),
+                      axis_title=element_text(size=12, color='#64748b'),
+                      axis_text=element_text(size=10),
+                      legend_title=element_text(size=12, weight='bold'),
+                      panel_grid_major=element_line(color='#f1f5f9'),
+                      panel_grid_minor=element_blank()))
         
         img_str = plot_to_base64(plot, width=8, height=5)
         return ui.img(src=img_str, style="max-width: 100%; height: auto;")
@@ -491,11 +679,16 @@ def server(input, output, session):
             return ui.div("No data available")
         
         plot = (ggplot(industry_stats, aes(x='avg_lead_score', y='conversion_rate', size='lead_count')) +
-                geom_point(alpha=0.7) +
+                geom_point(alpha=0.8, color=BRAND_COLORS[0]) +
                 theme_minimal() +
                 labs(title='Industry Performance: Lead Score vs Conversion Rate',
                      x='Average Lead Score', y='Conversion Rate (%)', size='Lead Count') +
-                theme(plot_title=element_text(size=14, weight='bold')))
+                theme(plot_title=element_text(size=16, weight='bold', color='#1e293b'),
+                      axis_title=element_text(size=12, color='#64748b'),
+                      axis_text=element_text(size=10),
+                      legend_title=element_text(size=12, weight='bold'),
+                      panel_grid_major=element_line(color='#f1f5f9'),
+                      panel_grid_minor=element_blank()))
         
         img_str = plot_to_base64(plot, width=10, height=5)
         return ui.img(src=img_str, style="max-width: 100%; height: auto;")
@@ -518,10 +711,16 @@ def server(input, output, session):
         plot = (ggplot(revenue_data, aes(x='company_size', y='revenue', fill='platform')) +
                 geom_col(position='dodge') +
                 theme_minimal() +
+                scale_fill_manual(values=BRAND_COLORS[:len(revenue_data['platform'].unique())]) +
                 labs(title='Revenue by Company Size and Platform',
                      x='Company Size', y='Revenue ($)', fill='Platform') +
-                theme(axis_text_x=element_text(rotation=45),
-                      plot_title=element_text(size=14, weight='bold')) +
+                theme(axis_text_x=element_text(rotation=45, size=10),
+                      plot_title=element_text(size=16, weight='bold', color='#1e293b'),
+                      axis_title=element_text(size=12, color='#64748b'),
+                      axis_text=element_text(size=10),
+                      legend_title=element_text(size=12, weight='bold'),
+                      panel_grid_major=element_line(color='#f1f5f9'),
+                      panel_grid_minor=element_blank()) +
                 scale_y_continuous(labels=lambda l: [f'${x/1000:.0f}K' for x in l]))
         
         img_str = plot_to_base64(plot, width=10, height=5)
@@ -631,6 +830,137 @@ def server(input, output, session):
             result += f"• {row[0]}: {row[1]} leads ({row[2]:.1f}% conversion)\n"
         return result
     
+    def analyze_conversion_times():
+        leads_df, _, _ = load_data()
+        converted_leads = leads_df.filter(pl.col('status') == 'Converted')
+        
+        # Handle null values in industry column
+        converted_with_industry = converted_leads.with_columns(
+            pl.col('industry').fill_null('Unknown Industry')
+        )
+        
+        # Calculate conversion times by industry
+        industry_times = (converted_with_industry
+                         .with_columns((pl.col('conversion_date') - pl.col('created_date')).dt.total_days().alias('conversion_days'))
+                         .group_by('industry')
+                         .agg([
+                             pl.col('conversion_days').mean().alias('avg_conversion_days'),
+                             pl.len().alias('converted_count')
+                         ])
+                         .filter(pl.col('converted_count') >= 2)
+                         .sort('avg_conversion_days'))
+        
+        result = "**Industries with fastest conversion times:**\n\n"
+        for i, row in enumerate(industry_times.head(5).iter_rows()):
+            result += f"{i+1}. **{row[0]}**: {row[1]:.0f} days ({row[2]} conversions)\n"
+        
+        overall_avg = converted_with_industry.with_columns(
+            (pl.col('conversion_date') - pl.col('created_date')).dt.total_days().alias('conversion_days')
+        )['conversion_days'].mean()
+        result += f"\nOverall average conversion time: {overall_avg:.0f} days"
+        return result
+    
+    def analyze_platform_roi():
+        leads_df, platform_df, _ = load_data()
+        
+        # Calculate total revenue by platform
+        revenue_by_platform = (leads_df
+                              .filter(pl.col('status') == 'Converted')
+                              .group_by('platform')
+                              .agg([
+                                  pl.col('opportunity_value').sum().alias('total_revenue'),
+                                  pl.len().alias('conversions')
+                              ]))
+        
+        # Get total spend by platform from platform_df
+        spend_by_platform = (platform_df
+                            .group_by('platform')
+                            .agg(pl.col('total_spend').sum().alias('total_spend')))
+        
+        # Join and calculate ROI
+        roi_analysis = (revenue_by_platform
+                       .join(spend_by_platform, on='platform', how='inner')
+                       .with_columns((pl.col('total_revenue') / pl.col('total_spend')).alias('roi'))
+                       .sort('roi', descending=True))
+        
+        result = "**Platform ROI Analysis:**\n\n"
+        for row in roi_analysis.iter_rows():
+            result += f"• **{row[0]}**: ${row[1]:,.0f} revenue / ${row[3]:,.0f} spend = **{row[4]:.1f}x ROI** ({row[2]} conversions)\n"
+        
+        return result
+    
+    def analyze_best_converting_leads():
+        leads_df, _, _ = load_data()
+        converted_leads = leads_df.filter(pl.col('status') == 'Converted')
+        
+        # Analyze characteristics of converted leads
+        platform_conversion = (converted_leads
+                              .group_by('platform')
+                              .agg(pl.len().alias('count'))
+                              .sort('count', descending=True))
+        
+        size_conversion = (converted_leads
+                          .group_by('company_size')
+                          .agg(pl.len().alias('count'))
+                          .sort('count', descending=True))
+        
+        avg_score = converted_leads['lead_score'].mean()
+        avg_revenue = converted_leads['annual_revenue'].mean()
+        avg_employees = converted_leads['employees'].mean()
+        
+        result = "**Characteristics of Best Converting Leads:**\n\n"
+        result += f"**Average Profile:**\n"
+        result += f"• Lead Score: {avg_score:.1f}\n"
+        result += f"• Company Revenue: ${avg_revenue:,.0f}\n"
+        result += f"• Company Size: {avg_employees:.0f} employees\n\n"
+        
+        result += f"**Top Converting Platforms:**\n"
+        for row in platform_conversion.head(3).iter_rows():
+            result += f"• {row[0]}: {row[1]} conversions\n"
+        
+        result += f"\n**Top Converting Company Sizes:**\n"
+        for row in size_conversion.iter_rows():
+            result += f"• {row[0]}: {row[1]} conversions\n"
+        
+        return result
+    
+    def analyze_lead_activity_patterns():
+        leads_df, _, _ = load_data()
+        
+        # Analyze by month
+        monthly_activity = (leads_df
+                           .with_columns(pl.col('created_date').dt.strftime('%Y-%m').alias('month'))
+                           .group_by('month')
+                           .agg(pl.len().alias('lead_count'))
+                           .sort('month'))
+        
+        # Analyze by day of week
+        weekly_activity = (leads_df
+                          .with_columns(pl.col('created_date').dt.weekday().alias('weekday'))
+                          .group_by('weekday')
+                          .agg(pl.len().alias('lead_count'))
+                          .sort('weekday'))
+        
+        weekday_names = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']
+        
+        best_month = monthly_activity.sort('lead_count', descending=True).row(0)
+        best_weekday = weekly_activity.sort('lead_count', descending=True).row(0)
+        
+        result = "**Lead Activity Patterns:**\n\n"
+        result += f"**Peak Activity:**\n"
+        result += f"• Best month: {best_month[0]} with {best_month[1]} leads\n"
+        result += f"• Best day: {weekday_names[best_weekday[0]-1]} with {best_weekday[1]} leads\n\n"
+        
+        result += f"**Monthly Activity:**\n"
+        for row in monthly_activity.iter_rows():
+            result += f"• {row[0]}: {row[1]} leads\n"
+        
+        result += f"\n**Weekly Pattern:**\n"
+        for row in weekly_activity.iter_rows():
+            result += f"• {weekday_names[row[0]-1]}: {row[1]} leads\n"
+        
+        return result
+    
     # FAQ Answer Handler
     @output
     @render.ui
@@ -651,6 +981,14 @@ def server(input, output, session):
                 answer = analyze_lead_score_correlation()
             elif question == "What are the seasonal trends in lead generation?":
                 answer = analyze_seasonal_trends()
+            elif question == "Which industries have the fastest conversion times?":
+                answer = analyze_conversion_times()
+            elif question == "What is the ROI comparison across different platforms?":
+                answer = analyze_platform_roi()
+            elif question == "What are the characteristics of our best converting leads?":
+                answer = analyze_best_converting_leads()
+            elif question == "Which time periods show the highest lead activity?":
+                answer = analyze_lead_activity_patterns()
             else:
                 answer = "This analysis is not yet implemented. Please select a different question."
             
