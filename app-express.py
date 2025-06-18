@@ -5,14 +5,16 @@ import polars as pl
 from plotly.subplots import make_subplots
 from shiny import reactive
 from shiny.express import input, render, ui
-from shinywidgets import render_widget
+from shinywidgets import render_plotly
 import querychat as qc
+
 
 def use_github_models(system_prompt: str) -> chatlas.Chat:
     return chatlas.ChatGithub(
         model="gpt-4.1",
         system_prompt=system_prompt,
     )
+
 
 def load_data():
     leads_df = pl.read_csv("salesforce_leads.csv")
@@ -330,7 +332,7 @@ with ui.nav_panel("Dashboard"):
 
         with ui.layout_column_wrap():
 
-            @render_widget
+            @render_plotly
             def leads_trend_chart():
                 fig = px.line(
                     trend_data(),
@@ -365,7 +367,7 @@ with ui.nav_panel("Dashboard"):
 
                 return fig
 
-            @render_widget
+            @render_plotly
             def platform_performance_chart():
                 # Create a figure with secondary y-axis
                 fig = make_subplots(specs=[[{"secondary_y": True}]])
@@ -445,7 +447,7 @@ with ui.nav_panel("Dashboard"):
 
         with ui.layout_column_wrap():
 
-            @render_widget
+            @render_plotly
             def conversion_funnel_chart():
                 fig = px.bar(
                     funnel_data(),
@@ -470,7 +472,7 @@ with ui.nav_panel("Dashboard"):
 
                 return fig
 
-            @render_widget
+            @render_plotly
             def lead_score_distribution():
                 fig = px.histogram(
                     filtered_data()["leads"],
@@ -499,7 +501,7 @@ with ui.nav_panel("Dashboard"):
 
                 return fig
 
-        @render_widget
+        @render_plotly
         def industry_performance_chart():
             fig = px.scatter(
                 industry_stats(),
@@ -522,7 +524,8 @@ with ui.nav_panel("Dashboard"):
 
             # Improve hover information
             fig.update_traces(
-                hovertemplate=(""
+                hovertemplate=(
+                    ""
                     + "Average Lead Score: %{x:.1f}<br>"
                     + "Conversion Rate: %{y:.1f}%<br>"
                     + "Lead Count: %{marker.size}<extra></extra>"
@@ -531,36 +534,32 @@ with ui.nav_panel("Dashboard"):
 
             return fig
 
-        @render_widget
+        @render_plotly
         def revenue_analysis_chart():
             fig = px.bar(
                 revenue_data(),
-                x='company_size',
-                y='revenue',
-                color='platform',
-                barmode='group',  # Equivalent to position='dodge' in ggplot
-                title='Revenue by Company Size and Platform',
+                x="company_size",
+                y="revenue",
+                color="platform",
+                barmode="group",  # Equivalent to position='dodge' in ggplot
+                title="Revenue by Company Size and Platform",
                 labels={
-                    'company_size': 'Company Size',
-                    'revenue': 'Revenue ($)',
-                    'platform': 'Platform'
+                    "company_size": "Company Size",
+                    "revenue": "Revenue ($)",
+                    "platform": "Platform",
                 },
             )
 
             # Update layout to match the ggplot styling
             fig.update_layout(
-                plot_bgcolor='white',
-                xaxis=dict(
-
-                ),
-                yaxis=dict(
-
-                ),
+                plot_bgcolor="white",
+                xaxis=dict(),
+                yaxis=dict(),
             )
 
             # Add hover template for better information display
             fig.update_traces(
-                hovertemplate='<b>%{x}</b><br>Platform: %{fullData.name}<br>Revenue: $%{y:,.0f}<extra></extra>'
+                hovertemplate="<b>%{x}</b><br>Platform: %{fullData.name}<br>Revenue: $%{y:,.0f}<extra></extra>"
             )
 
             return fig
