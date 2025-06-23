@@ -8,9 +8,11 @@ from shiny.express import input, render, ui
 from shinywidgets import render_widget
 import querychat as qc
 
-def use_github_models(system_prompt: str) -> chatlas.Chat:
-    return chatlas.ChatGithub(
-        model="gpt-4.1",
+ui.page_opts(theme=ui.Theme.from_brand(__file__))
+
+def use_anthropic_models(system_prompt: str) -> chatlas.Chat:
+    return chatlas.ChatAnthropic(
+        model="claude-3-7-sonnet-latest",
         system_prompt=system_prompt,
     )
 
@@ -573,7 +575,7 @@ with ui.nav_panel("Querychat"):
     querychat_config = qc.init(
         leads_df,
         "leads_df",
-        create_chat_callback=use_github_models,
+        create_chat_callback=use_anthropic_models,
     )
 
     with ui.layout_sidebar(fillable=True, fill=True):
