@@ -18,6 +18,12 @@ def use_github_models(system_prompt: str) -> chatlas.Chat:
         system_prompt=system_prompt,
     )
 
+def use_anthropic_models(system_prompt: str) -> chatlas.Chat:
+    return chatlas.ChatAnthropic(
+        model="claude-3-7-sonnet-latest",
+        system_prompt=system_prompt,
+    )
+
 
 def load_data():
     leads_df = pl.read_csv("salesforce_leads.csv")
@@ -915,7 +921,7 @@ with ui.nav_panel("Querychat"):
     querychat_config = qc.init(
         leads_df,
         "leads_df",
-        #create_chat_callback=use_github_models,
+        create_chat_callback=use_anthropic_models,
     )
 
     with ui.layout_sidebar(fillable=True, fill=True):
