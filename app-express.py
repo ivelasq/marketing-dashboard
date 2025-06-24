@@ -1,4 +1,5 @@
 import chatlas
+import great_tables as gt
 import plotly.express as px
 import plotly.graph_objects as go
 import polars as pl
@@ -7,6 +8,8 @@ from shiny import reactive
 from shiny.express import input, render, ui
 from shinywidgets import render_plotly
 import querychat as qc
+
+plotly_modebar_remove = ["zoom", "pan", "lasso", "select", "autoscale"]
 
 
 def use_github_models(system_prompt: str) -> chatlas.Chat:
@@ -354,6 +357,7 @@ with ui.nav_panel("Dashboard"):
                 fig.update_layout(
                     hovermode="x unified",
                     plot_bgcolor="white",
+                    modebar_remove=plotly_modebar_remove,
                     yaxis=dict(
                         range=[0, y_max],  # Set fixed y-axis range
                         fixedrange=True,  # Prevent y-axis from auto-adjusting
@@ -403,6 +407,7 @@ with ui.nav_panel("Dashboard"):
                     },
                     plot_bgcolor="white",
                     hoverlabel=dict(bgcolor="white", font_size=12),
+                    modebar_remove=plotly_modebar_remove,
                     legend=dict(
                         orientation="h",
                         yanchor="bottom",
@@ -463,7 +468,10 @@ with ui.nav_panel("Dashboard"):
                     },
                 )
 
-                fig.update_layout(plot_bgcolor="white")
+                fig.update_layout(
+                    plot_bgcolor="white",
+                    modebar_remove=plotly_modebar_remove,
+                )
 
                 # Add hover template for better information display
                 fig.update_traces(
@@ -491,6 +499,7 @@ with ui.nav_panel("Dashboard"):
 
                 # Update layout to match the ggplot styling
                 fig.update_layout(
+                    modebar_remove=plotly_modebar_remove,
                     plot_bgcolor="white",
                 )
 
@@ -519,6 +528,7 @@ with ui.nav_panel("Dashboard"):
 
             # Update layout to match the ggplot styling
             fig.update_layout(
+                modebar_remove=plotly_modebar_remove,
                 plot_bgcolor="white",
             )
 
@@ -552,6 +562,7 @@ with ui.nav_panel("Dashboard"):
 
             # Update layout to match the ggplot styling
             fig.update_layout(
+                modebar_remove=plotly_modebar_remove,
                 plot_bgcolor="white",
                 xaxis=dict(),
                 yaxis=dict(),
@@ -566,13 +577,345 @@ with ui.nav_panel("Dashboard"):
 
 
 with ui.nav_panel("FAQ"):
-    "Page B content"
+
+    @reactive.calc
+    def by_conversion_rate():
+        conversion_rate = (
+            leads_df.group_by("platform")
+            .agg([
+                pl.len().alias("total"),
+                (pl.col("status") == "Converted").sum().alias("converted"),
+            ])
+            .with_columns(
+                (pl.col("converted").cast(pl.Float64) / pl.col("total")).alias(
+                    "conversion_rate"
+                )
+            )
+            .sort("conversion_rate", descending=True)
+        )
+        return conversion_rate
+
+    @reactive.calc
+    def by_average_lead_score():
+        lead_score = (
+            leads_df.group_by("platform")
+            .agg([
+                pl.col("lead_score").mean().alias("avg_lead_score"),
+                pl.len().alias("total_leads"),
+            ])
+            .sort("avg_lead_score", descending=True)
+        )
+        return lead_score
+
+    with ui.accordion(id="faq", multiple=True, open=False):
+        with ui.accordion_panel(
+            title="Which platform generates the highest quality leads?",
+        ):
+            "Define high quality leads by conversion rates"
+
+            with ui.layout_column_wrap():
+                with ui.card():
+
+                    @render.data_frame
+                    def show_highest_conversion_rate():
+                        return by_conversion_rate()
+
+                with ui.card():
+
+                    @render_plotly
+                    def plot_highest_conversion_rate():
+                        df_plot = by_conversion_rate().to_pandas()
+
+                        # Create the bar chart
+                        fig = px.bar(
+                            df_plot,
+                            x="platform",
+                            y="conversion_rate",
+                            title="Platform Conversion Rates - Highest Quality Leads",
+                            labels={
+                                "conversion_rate": "Conversion Rate",
+                                "platform": "Platform",
+                            },
+                            text="conversion_rate",  # Show values on bars
+                        )
+
+                        # Customize the chart
+                        fig.update_traces(
+                            texttemplate="%{text:.1%}",  # Format as percentage
+                            textposition="outside",
+                        )
+
+                        fig.update_layout(
+                            yaxis_tickformat=".1%",  # Format y-axis as percentage
+                            xaxis_title="Platform",
+                            yaxis_title="Conversion Rate",
+                            showlegend=False,
+                            height=500,
+                        )
+
+                        # Alternative with more customization using graph_objects
+                        fig_custom = go.Figure(
+                            data=[
+                                go.Bar(
+                                    x=df_plot["platform"],
+                                    y=df_plot["conversion_rate"],
+                                    text=[
+                                        f"{rate:.1%}"
+                                        for rate in df_plot["conversion_rate"]
+                                    ],
+                                    textposition="outside",
+                                    marker_color="lightblue",
+                                    marker_line_color="darkblue",
+                                    marker_line_width=1.5,
+                                )
+                            ]
+                        )
+
+                        fig_custom.update_layout(
+                            title="Platform Conversion Rates - Highest Quality Leads",
+                            xaxis_title="Platform",
+                            yaxis_title="Conversion Rate",
+                            yaxis_tickformat=".1%",
+                            height=500,
+                            template="plotly_white",
+                        )
+
+                        return fig
+
+            "Define quality leads by average lead score"
+
+            with ui.layout_column_wrap():
+                with ui.card():
+
+                    @render.data_frame
+                    def show_average_lead_score():
+                        return by_average_lead_score()
+
+                with ui.card():
+
+                    @render_plotly
+                    def plot_average_lead_score():
+                        fig_score = px.bar(
+                            by_average_lead_score(),
+                            x='platform',
+                            y='avg_lead_score',
+                            title='Average Lead Score by Platform - Highest Quality Leads',
+                            labels={
+                                'avg_lead_score': 'Average Lead Score',
+                                'platform': 'Platform'
+                            },
+                            text='avg_lead_score',
+                            color='avg_lead_score',
+                            color_continuous_scale='Blues'
+                        )
+
+                        fig_score.update_traces(
+                            texttemplate='%{text:.1f}',
+                            textposition='outside'
+                        )
+
+                        fig_score.update_layout(
+                            xaxis_title='Platform',
+                            yaxis_title='Average Lead Score',
+                            showlegend=False,
+                            height=500
+                        )
+                        return fig_score
+
+
+        with ui.accordion_panel(
+            "Which company size segment has the highest revenue potential?"
+        ):
+
+            @reactive.calc
+            def revenue_potential():
+                rev_pot = (
+                    leads_df
+                    .group_by("company_size")
+                    .agg(
+                        pl.col("opportunity_value").sum().alias("total_revenue_potential")
+                    )
+                    .sort("total_revenue_potential", descending=True)
+                )
+                return rev_pot
+
+            with ui.layout_column_wrap():
+                with ui.card():
+                    @render.data_frame
+                    def show_revenue_potential():
+                        formatted_results = revenue_potential().with_columns(
+                            pl.col("total_revenue_potential").map_elements(
+                                lambda x: f"${x:,.0f}",
+                                return_dtype=pl.Utf8
+                            ).alias("formatted_revenue")
+                        )
+                        return formatted_results
+
+                with ui.card():
+                    @render_plotly
+                    def plot_revenue_potential():
+                        fig = px.bar(
+                            revenue_potential(),
+                            x='total_revenue_potential',
+                            y='company_size',
+                            orientation='h',
+                            title='Total Revenue Potential by Company Size',
+                            labels={
+                                'total_revenue_potential': 'Total Revenue Potential ($)',
+                                'company_size': 'Company Size'
+                            },
+                            text='total_revenue_potential',
+                            color='total_revenue_potential',
+                            color_continuous_scale='Blues',
+                            category_orders={'company_size': revenue_potential()['company_size']}
+                        )
+
+                        fig.update_traces(
+                            texttemplate='$%{text:,.0f}',
+                            textposition='inside'
+                        )
+
+                        fig.update_layout(
+                            xaxis_tickformat='$,.0f',
+                            xaxis_title='Total Revenue Potential ($)',
+                            yaxis_title='Company Size',
+                            height=500,
+                            showlegend=False,
+                            coloraxis_showscale=False ,
+                            margin=dict(r=100),
+                        )
+
+                        return fig
+
+        with ui.accordion_panel(
+            "What are the characteristics of our best converting leads?"
+        ):
+            "Define best converted leads as leads cores in the top quantile (top 25%)"
+
+            @render.data_frame
+            def best_lead_characteristics():
+
+                # Step 1: Filter converted leads and find 75th percentile threshold
+                converted_leads = leads_df.filter(pl.col("status") == "Converted")
+
+                score_p75 = converted_leads.select(
+                    pl.col("lead_score").quantile(0.75).alias("score_p75")
+                ).item()
+
+                # Step 2: Filter high score converted leads
+                high_score_converted = converted_leads.filter(
+                    pl.col("lead_score") >= score_p75
+                )
+
+                # Step 3: Get most common values for categorical columns
+                top_platform = (
+                    high_score_converted
+                    .group_by("platform")
+                    .agg(pl.len().alias("count"))
+                    .sort("count", descending=True)
+                    .limit(1)
+                    .select("platform")
+                    .item()
+                )
+
+                top_industry = (
+                    high_score_converted
+                    .group_by("industry")
+                    .agg(pl.len().alias("count"))
+                    .sort("count", descending=True)
+                    .limit(1)
+                    .select("industry")
+                    .item()
+                )
+
+                top_company_size = (
+                    high_score_converted
+                    .group_by("company_size")
+                    .agg(pl.len().alias("count"))
+                    .sort("count", descending=True)
+                    .limit(1)
+                    .select("company_size")
+                    .item()
+                )
+
+                # Step 4: Calculate individual metrics
+                lead_count = high_score_converted.height
+                avg_opportunity_value = high_score_converted.select(pl.col("opportunity_value").mean()).item()
+                avg_employees = high_score_converted.select(pl.col("employees").mean()).item()
+                avg_annual_revenue = high_score_converted.select(pl.col("annual_revenue").mean()).item()
+
+                # Step 5: Create long format report table
+                report_data = [
+                    ("Lead Score Threshold (75th Percentile)", f"{score_p75:.1f}"),
+                    ("Total High Score Converted Leads", f"{lead_count:,}"),
+                    ("Top Platform", top_platform),
+                    ("Top Industry", top_industry),
+                    ("Top Company Size", top_company_size),
+                    ("Average Opportunity Value", f"${avg_opportunity_value:,.0f}"),
+                    ("Average Employees", f"{avg_employees:,.0f}"),
+                    ("Average Annual Revenue", f"${avg_annual_revenue:,.0f}")
+                ]
+
+                # Create the long format table
+                report_table = pl.DataFrame({
+                    "Metric": [item[0] for item in report_data],
+                    "Value": [item[1] for item in report_data]
+                })
+
+                return report_table
+
+
+        with ui.accordion_panel(
+            "What are the seasonal trends in lead generation?"
+        ):
+            @render_plotly
+            def monthly_leads_source():
+                leads_monthly = (
+                    leads_df
+                    .filter(pl.col("lead_source").is_not_null())
+                    .with_columns([
+                        pl.col("created_date").dt.strftime("%Y-%m").alias("month")
+                    ])
+                    .sort([
+                        pl.col("month").reverse(),
+                        pl.col("lead_source"),
+                        pl.col("created_date").reverse()
+                    ])
+                )
+
+                leads_summary = (
+                    leads_monthly
+                    .group_by(["month", "lead_source"])
+                    .agg(pl.count().alias("lead_count"))
+                    .sort(["month", "lead_source"])
+                )
+
+                fig = px.line(
+                    leads_summary.to_pandas(),
+                    x="month",
+                    y="lead_count",
+                    color="lead_source",
+                    title="Lead Trends by Source Over Time",
+                    labels={"lead_count": "Number of Leads", "month": "Month"},
+                    markers=True
+                )
+
+                fig.update_layout(
+                    hovermode="x unified",
+                    xaxis_tickangle=-45,
+                    plot_bgcolor="white"
+                )
+
+                fig.update_traces(
+                    hovertemplate="%{fullData.name}: %{y} leads<extra></extra>"
+                )
+                return fig
 
 with ui.nav_panel("Querychat"):
     querychat_config = qc.init(
         leads_df,
         "leads_df",
-        create_chat_callback=use_github_models,
+        #create_chat_callback=use_github_models,
     )
 
     with ui.layout_sidebar(fillable=True, fill=True):
